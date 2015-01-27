@@ -1,0 +1,57 @@
+#!/bin/sh
+
+# Install the base package set from oi-dev.
+echo "Installing package set ..."
+pkg install \
+ pkg:/data/docbook \
+ pkg:/developer/astdev \
+ pkg:/developer/build/make \
+ pkg:/developer/build/onbld \
+ pkg:/developer/illumos-gcc \
+ pkg:/developer/gnu-binutils \
+ pkg:/developer/opensolaris/osnet \
+ pkg:/developer/java/jdk \
+ pkg:/developer/lexer/flex \
+ pkg:/developer/object-file \
+ pkg:/developer/parser/bison \
+ pkg:/developer/versioning/mercurial \
+ pkg:/developer/versioning/git \
+ pkg:/developer/library/lint \
+ pkg:/library/glib2 \
+ pkg:/library/libxml2 \
+ pkg:/library/libxslt \
+ pkg:/library/nspr/header-nspr \
+ pkg:/library/perl-5/xml-parser \
+ pkg:/library/security/trousers \
+ pkg:/print/cups \
+ pkg:/print/filter/ghostscript \
+ pkg:/runtime/perl-510 \
+ pkg:/runtime/perl-510/extra \
+ pkg:/runtime/perl-510/module/sun-solaris \
+ pkg:/system/library/math/header-math \
+ pkg:/system/library/install \
+ pkg:/system/library/dbus \
+ pkg:/system/library/libdbus \
+ pkg:/system/library/libdbus-glib \
+ pkg:/system/library/mozilla-nss/header-nss \
+ pkg:/system/header \
+ pkg:/system/management/product-registry \
+ pkg:/system/management/snmp/net-snmp \
+ pkg:/text/gnu-gettext \
+ pkg:/library/python-2/python-extra-26 \
+ pkg:/web/server/apache-13 \
+ pkg:/system/test/testrunner \
+ pkg:/system/test/zfstest \
+ pkg:/developer/sunstudio12u1
+
+# Ensure that things are accessible in the correct order.
+echo "export PATH=/opt/SUNWspro/sunstudio12.1/bin:\${PATH}" >> .profile
+echo "export PATH=/opt/gcc/4.4.4/bin:\${PATH}" >> .profile
+echo "export PATH=/opt/onbld/bin:\${PATH}" >> .profile
+echo "export PATH=/usr/bin:\${PATH}" >> .profile
+
+echo "Setting up a VM-local illumos-gate workspace ..."
+su - vagrant -c /vagrant/git/workspace-setup.sh
+
+# Remove /tmp so we can build properly.  This requires a reboot.
+perl -pi -e 's,(^.*/tmp.*$),#$1,g' /etc/vfstab

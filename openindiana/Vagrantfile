@@ -1,0 +1,64 @@
+# Vagrantfile for illumos development on OmniOS.
+
+def cfg_zfs_disks(vb)
+  # Add a set of virtual disks to be used for ZFS tests.
+  # In Illumos this should appear as c2t1d0 c2t2d0 c2t3d0 c2t4d0 c2t5d0.
+  #
+  # XXX: Should this be part of the wrapper that runs the tests, so the
+  #      disks are purely ephemeral?
+  zfsdisks = File.join(Dir.getwd, "zfsdisks")
+  disksize = 5000 # 5GB
+
+  1.upto(5) do |i|
+    diskpath = File.join(zfsdisks, "disk#{i}.vdi")
+    next if File.exists?(diskpath)
+    if i == 1
+      # Add the storage controller if we haven't created the first disk yet.
+      vb.customize ['storagectl', :id, "--name", "SAS", "--add", "scsi",
+                    "--controller", "LsiLogic"]
+    end
+
+    vb.customize ['createhd', '--filename', diskpath, '--size', disksize]
+    vb.customize ['storageattach', :id, '--storagectl', 'SAS',
+                  '--port', i, '--device', 0, '--type', 'hdd',
+                  '--medium', diskpath]
+  end
+end
+
+
+Vagrant.configure(2) do |config|
+  # Every Vagrant virtual environment requires a box to build off of.
+  config.vm.box = "oi-hipster-201410"
+
+  config.vm.provider "virtualbox" do |vb|
+    # Bump the RAM and CPU to correspond to a proper build VM.
+    # The VM should have at least 2GB per VCPU.  Default to 4 VCPU/8GB.
+    vb.customize ["modifyvm", :id, "--memory", "8192"]
+    vb.customize ["modifyvm", :id, "--cpus", "4"]
+
+    cfg_zfs_disks(vb)
+  end
+
+  # If true, then any SSH connections made will enable agent forwarding.
+  config.ssh.forward_agent = true
+
+  # When provisioning, run the OmniOS-specific setup script automatically.
+  config.vm.provision "shell", path: "setup.sh"
+
+  # Mount any other folder you might want inside the VM.
+  #config.vm.synced_folder "source/path/", "/destpath/"
+
+  # Create a forwarded port mapping which allows access to a specific port
+  # within the machine from a port on the host machine. In the example below,
+  # accessing "localhost:8080" will access port 80 on the guest machine.
+  # config.vm.network "forwarded_port", guest: 80, host: 8080
+
+  # Create a private network, which allows host-only access to the machine
+  # using a specific IP.
+  # config.vm.network "private_network", ip: "192.168.33.10"
+
+  # Create a public network, which generally matched to bridged network.
+  # Bridged networks make the machine appear as another physical device on
+  # your network.
+  # config.vm.network "public_network"
+end
