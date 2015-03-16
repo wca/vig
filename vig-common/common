@@ -1,0 +1,76 @@
+################################# CONSTANTS ###############################
+# Constants used in this script.
+SNAPPLUGIN=vagrant-multiprovider-snap
+HIPSTER=oi-hipster-201410
+OI_PACKER_GIT="git://github.com/wca/oi-packer"
+VAGRANTHOME=/vagrant
+USERHOME=/export/home/vagrant
+VAGRANTGIT=${VAGRANTHOME}/git
+VIGCOPY=${VAGRANTHOME}/.vig
+GUESTVIG="${VIGCOPY}/vig guest"
+
+############################## COMMON ROUTINES ############################
+
+register_stopper() {
+	stopper="$1"
+	stoppers="${stopper} ${stoppers}"
+}
+
+unregister_stopper() {
+	stopper="$1"
+	stoppers="${stoppers%${stopper}}"
+	stoppers="${stoppers#${stopper}}"
+}
+
+register_command() {
+	cmd_type="$1"
+	cmd_name="$2"
+	cmd_desc="$3"
+
+	eval export ${cmd_type}_${cmd_name}_VALID=1
+	eval export ${cmd_type}_${cmd_name}_desc=\"${cmd_desc}\"
+	cmds=$(eval echo \$${cmd_type}_cmds)
+	eval export ${cmd_type}_cmds=\"${cmds} ${cmd_name}\"
+}
+
+stop() {
+	for stopper in ${stoppers}; do
+		${stopper}
+		unregister_stopper ${stopper}
+	done
+	exit $ret
+}
+
+runcmd() {
+	echo "+ $*"
+	eval $*; ret=$?
+	[ $ret -ne 0 ] && stop
+	true
+}
+
+runssh() {
+	runcmd vagrant ssh -c \"$*\"
+}
+
+checkcmd() {
+	eval $*; ret=$?
+	[ $ret -ne 0 ] && stop
+	true
+}
+
+ignorecmd() {
+	echo "+ $*"
+	eval $*
+}
+
+load_subroutines() {
+	for subr in ${VIG_DIR}/vig-common/*.subr; do
+		. ${subr}
+	done
+	trap 'stop' TERM INT
+}
+
+vig_reexec_noreturn() {
+	exec ${VIG_PATH} ${VIG_ARGS} $*
+	exit 127 # NOTREACHED
+}

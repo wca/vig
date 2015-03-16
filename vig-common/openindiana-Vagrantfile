@@ -1,4 +1,4 @@
-# Vagrantfile for illumos development on OmniOS.
+# Vagrantfile for illumos development on OpenIndiana.
 
 def cfg_zfs_disks(vb)
   # Add a set of virtual disks to be used for ZFS tests.
@@ -42,7 +42,8 @@ Vagrant.configure(2) do |config|
   # If true, then any SSH connections made will enable agent forwarding.
   config.ssh.forward_agent = true
 
-  # When provisioning, run the OmniOS-specific setup script automatically.
+  # When provisioning, run the OpenIndiana-specific setup script automatically.
+  # This setup script is put in place by host_vagrantup().
   config.vm.provision "shell", path: "setup.sh"
 
   # Mount any other folder you might want inside the VM.

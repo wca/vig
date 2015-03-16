@@ -1,0 +1,78 @@
+guest_zfstests_prestart() {
+	# Install the package set for on-nightly and activate its BE.
+	RUNTS="$1"
+	[ -z "$RUNTS" ] && echo "Error: must specify build runtime timestamp"
+	gate=$HOME/ws/illumos-gate
+	sudo $gate/usr/src/tools/scripts/onu -t $RUNTS \
+		-d $gate/packages/i386/nightly
+}
+register_command guest zfstests_prestart "Pre-setup for running the tests"
+
+guest_zfstests_actual() {
+	RUNTS="$1"
+	[ -z "$RUNTS" ] && echo "Must specify build runtime timestamp" && exit 1
+
+	# Run the test suite and save the result to return as the final exit.
+	export DISKS="c2t1d0 c2t2d0 c2t3d0 c2t4d0 c2t5d0"
+	/opt/zfs-tests/bin/zfstest
+	ret=$?
+
+	resultsparent=/var/tmp/test_results
+	resultsdir="$(ls -1td $resultsparent/* | head -1 | awk '{print $1}')"
+	tsdir=/vagrant/zfstests/${RUNTS}
+	echo "ZFS tests exited $ret, copying from $resultsdir to $tsdir ..."
+	cp -rp $resultsdir/* $tsdir
+	exit $ret
+}
+register_command guest zfstests_actual "Actually run the ZFS tests"
+
+zfstests__stop_rollback() {
+	vagrant snap rollback default --name "${RUNTS}"
+}
+zfstests__stop_delete() {
+	vagrant snap delete default --name "${RUNTS}"
+}
+zfstests_register_stoppers() {
+	# Insert in reverse order of actual execution.
+	register_stopper zfstests__stop_delete
+	register_stopper zfstests__stop_rollback
+}
+zfstests_teardown() {
+	zfstests__stop_rollback
+	unregister_stopper zfstests__stop_rollback
+	zfstests__stop_delete
+	unregister_stopper zfstests__stop_delete
+}
+
+host_zfstests() {
+	stopped=0
+	ret=0
+
+	## Everything should be sandboxed to this runtime timestamp.
+	## Re-execute ourselves passing the runtime timestamp.
+	RUNTS="$1"
+	if [ -z "$RUNTS" ]; then
+		RUNTS="$(date -u '+%Y.%m.%d.%H%M%S')"
+		LOGDIR="${VIG_DIR}/zfstests/${RUNTS}"
+		[ -d "$LOGDIR" ] && echo "$LOGDIR already exists?" && exit 127
+		mkdir -p ${LOGDIR}
+		vig_reexec_noreturn ${RUNTS} | tee ${LOGDIR}/log
+	fi
+	LOGDIR="${VIG_DIR}/zfstests/${RUNTS}"
+
+	## 1. Create a snapshot of the VM and bring it up if needed.
+	##    Once the snapshot is created, trap signals to shutdown properly.
+	runcmd vagrant snap take default --name $RUNTS
+	zfstests_register_stoppers
+
+	## 2. Install the current packages into a new BE and restart.
+	runcmd vagrant ssh -c \"$GUESTVIG zfstest_prestart ${RUNTS}\"
+	runcmd vagrant reload
+
+	## 3. Start the run, and copy back the results if possible.
+	runcmd vagrant ssh -c \"$GUESTVIG zfstest_actual ${RUNTS}\"
+
+	## 4. Stop by rolling back the snapshot and destroying it.
+	zfstests_teardown
+}
+register_command host zfstests "Perform a full ZFS test suite run"

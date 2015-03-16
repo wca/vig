@@ -1,0 +1,52 @@
+git_last_commit() {
+	treeish=$1
+	git -1 --format=short --pretty=oneline $treeish | awk '{print $1}'
+}
+
+guest_workspace_update() {
+	# Update the copy of vig, if needed.
+	cd ${VAGRANTGIT}
+	commitid=$(git_last_commit master)
+	idfile=${VIGCOPY}/.commitid
+	[ -f "${idfile}" ] && currentid=$(cat ${idfile})
+	[ "${currentid}" = "${commitid}" ] && return
+
+	rm -rf ${VIGCOPY}
+	mkdir -p ${VIGCOPY}
+	git archive ${commitid} | tar -C ${VIGCOPY} -xvf -
+	echo "${commitid}" > ${idfile}
+}
+register_command guest workspace_update "Update the vig copy with the master"
+
+guest_workspace_init() {
+	guest_workspace_update
+
+	# Fetch the closed binaries, if needed.  Cache them in case we need
+	# multiple working spaces.
+	closed_bins=${VAGRANTHOME}/.closed_bins
+	closed_url=http://dlc.openindiana.org/dlc.sun.com/osol/on/downloads/20100817
+	mkdir -p ${closed_bins}
+	for f in on-closed-bins-nd on-closed-bins; do
+		p=${f}.i386.tar.bz2
+		cached_p=${closed_bins}/${p}
+		if [ ! -f "${cached_p}" ]; then
+			wget -qO ${cached_p} ${closed_url}/${p}; ret=$?
+			[ $ret -ne 0 ] && exit $ret
+		fi
+		echo "Checking MD5 for ${cached_p} ..."
+		md5=$(md5sum ${cached_p} | awk '{print $1}')
+		case "$f" in
+		on-closed-bins-nd) expected="35f08b4630d85307940482a8470f1188" ;;
+		on-closed-bins)    expected="e6bdf40bd30d330e6a68f0515f6f2d24" ;;
+		*)		   echo "???" && exit 1 ;;
+		esac
+		if [ "$md5" != "$expected" ]; then
+			echo "MD5 checksum failure for ${f}"
+			exit 1
+		fi
+		echo "MD5 OK, extracting ${cached_p} ..."
+		tar xf ${cached_p}
+	done
+	echo "Build setup done."
+}
+register_command guest workspace_init "Perform the initial workspace setup"

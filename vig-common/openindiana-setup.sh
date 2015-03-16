@@ -1,6 +1,12 @@
 #!/bin/sh
+# The OpenIndiana vagrant provisioner script.
+# This is separate from the vig-common scripts because vagrant will transmit
+# this file (and only this file) to the guest for provisioning.
 
 # Install the base package set from oi-dev.
+echo "Checking on provision time setup ..."
+ls -l /vagrant
+
 echo "Installing package set ..."
 pkg install \
  pkg:/data/docbook \
@@ -51,7 +57,7 @@ echo "export PATH=/opt/onbld/bin:\${PATH}" >> .profile
 echo "export PATH=/usr/bin:\${PATH}" >> .profile
 
 echo "Setting up a VM-local illumos-gate workspace ..."
-su - vagrant -c /vagrant/git/workspace-setup.sh
+su - vagrant -c '/vagrant/git/vig guest workspace_init'
 
 # Remove /tmp so we can build properly.  This requires a reboot.
 perl -pi -e 's,(^.*/tmp.*$),#$1,g' /etc/vfstab

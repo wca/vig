@@ -1,0 +1,90 @@
+#!/bin/sh
+# The wrapper script for working with illumos-gate vagrant recipes.
+#
+# Basically this functions by concatening the <host|guest> argument with the
+# subcommand, calling that method with any remaining arguments.
+
+############################## BASIC SUBROUTINES ##########################
+# These are needed to initialize, so they're here instead of vig-common/common.
+
+determine_abspath_method() {
+	which realpath >/dev/null 2>&1 && ABSPATH_METHOD="realpath" && return
+	which ruby >/dev/null 2>&1 && ABSPATH_METHOD="ruby" && return
+	echo "Can't determine reliable way to get realpath" && exit 1
+}
+
+get_abspath() {
+	path=$1
+
+	[ -z "$ABSPATH_METHOD" ] && determine_abspath_method
+
+	case "$ABSPATH_METHOD" in
+	realpath)	realpath $path ;;
+	ruby)		ruby -e "puts File.expand_path('$path')" ;;
+	esac
+}
+
+############################## MAIN AND USAGE #############################
+
+vig_usage() {
+	exitcode=$1
+	helptype=$2
+	helpname=$3
+
+	global="$VIG_PATH [global options]"
+	if [ -z "$helptype" ]; then
+		echo "Usage: $global <host|guest> <subcommand> [options] <args>"
+	elif [ -z "$helpname" ]; then
+		echo "Usage: $global $helptype <subcommand> [options] <args>"
+		echo "Valid ${helptype} subcommands:"
+		for subname in $(eval echo \$${helptype}_cmds); do
+			subcmd_desc=$(eval echo \$${helptype}_${subname}_desc)
+			echo "  ${subname}: ${subcmd_desc}"
+		done
+	else
+		subcmd_desc=$(eval \$${helptype}_${subname}_desc)
+		echo "Usage: $global $helptype $helpname [options] <args>"
+		echo "  ${subcmd_desc}"
+	fi
+	exit $exitcode
+}
+
+vig_main() {
+	VIG_PATH=$(get_abspath $0)
+	VIG_DIR=$(dirname $VIG_PATH)
+
+	. ${VIG_DIR}/vig-common/common
+	load_subroutines
+
+	domain=$1; shift
+	if [ "$domain" = "help" -o "$domain" = "-h" ]; then
+		vig_usage 0
+	fi
+
+	if [ "${domain}" != "guest" -a "${domain}" != "host" ]; then
+		[ -n "${domain}" ] && echo "Invalid domain '${domain}'"
+		vig_usage 1
+	fi
+
+	subcmd=$1; shift
+	if [ "$subcmd" = "help" -o "$subcmd" = "-h" -o -z "$subcmd" ]; then
+		vig_usage 0 $domain
+	fi
+
+	if [ -z "$subcmd" ]; then
+		echo "Must specify subcommand for domain '${domain}'!"
+		vig_usage 1
+	fi
+
+	cmdfcn="${domain}_${subcmd}"
+	if [ -z "\$${cmdfcn}_VALID" ]; then
+		echo "Invalid subcommand ${subcmd} for domain '${domain}'"
+		vig_usage 1
+	fi
+
+	eval ${cmdfcn} $*
+	ret=$?
+	exit $ret
+}
+
+vig_main $*

@@ -1,0 +1,27 @@
+host_vagrantup() {
+	runcmd ln -sf git/vig-common/openindiana-Vagrantfile Vagrantfile
+	runcmd ln -sf git/vig-common/openindiana-setup.sh setup.sh
+	runcmd rm -rf zfsdisks
+
+	# Destroy the VM if needed.
+	ignorecmd vagrant destroy -f >/dev/null 2>&1
+
+	# Make sure the disks are gone too.
+	zfsdisks=$(pwd)/zfsdisks
+	for i in 1 2 3 4 5; do
+		disk=${zfsdisks}/disk${i}.vdi
+		VBoxManage showhdinfo ${disk} >/dev/null 2>&1 || continue
+		runcmd VBoxManage closemedium disk ${disk} --delete
+	done
+
+	# Bring up the VM, then restart it for setup changes to take effect.
+	runcmd vagrant up
+	runcmd vagrant reload
+}
+register_command host vagrantup "Bring up the VM"
+
+host_fromscratch() {
+	host_build
+	host_zfstests
+}
+register_command host fromscratch "Perform everything from scratch"

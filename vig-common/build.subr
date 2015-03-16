@@ -1,0 +1,38 @@
+guest_build_init() {
+	cp ${VIG_COMMON}/illumos.sh .
+	ws=$(basename $(pwd))
+	perl -pi -e "s,REPLACE_WITH_WS_GATE_NAME,${ws},g" illumos.sh
+	cp usr/src/tools/scripts/nightly.sh .
+	chmod +x nightly.sh
+}
+register_command guest build_init "Perform initial build setup"
+
+guest_build() {
+	# Tail the nightly log while the build is running.
+	/usr/gnu/bin/tail -F log/nightly.log &
+	tailpid=$!
+
+	./nightly.sh $* illumos.sh
+	ret=$?
+	kill -15 $tailpid
+	exit $ret
+}
+register_command guest build "Perform a build"
+
+host_build() {
+	[ -z "$BRANCH" ] && BRANCH="$1"
+	[ -z "$BRANCH" ] && BRANCH="illumos-master"
+
+	# Checkout the branch and initiate a build.
+	cd git
+	runcmd git checkout $BRANCH
+	cd ..
+
+	# Make sure the VM is up.
+	host_vagrantup
+
+	# The illumos build always returns non-zero because there are
+	# currently-ignored lint warnings.
+	runssh "${GUESTVIG} build_init && (${GUESTVIG} build || true)"
+}
+register_command host build "Perform a build in the VM"
