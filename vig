@@ -50,8 +50,9 @@ vig_usage() {
 }
 
 vig_main() {
-	VIG_PATH=$(get_abspath $0)
-	VIG_DIR=$(dirname $VIG_PATH)
+	export VIG_PATH=$(get_abspath $0)
+	export VIG_DIR=$(dirname $VIG_PATH)
+	export VIG_TOP=$(dirname $VIG_DIR)
 
 	. ${VIG_DIR}/vig-common/common
 	load_subroutines

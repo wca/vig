@@ -1,22 +1,35 @@
 git_last_commit() {
 	treeish=$1
-	git -1 --format=short --pretty=oneline $treeish | awk '{print $1}'
+	git log -1 --format=short --pretty=oneline $treeish | awk '{print $1}'
 }
 
-guest_workspace_update() {
+# The real vig update method.  Only difference is source/target directory.
+update_workspace() {
+	src=$1
+	dst=$2
+
 	# Update the copy of vig, if needed.
-	cd ${VAGRANTGIT}
+	cd ${src}
 	commitid=$(git_last_commit master)
-	idfile=${VIGCOPY}/.commitid
+	idfile=${dst}/.commitid
 	[ -f "${idfile}" ] && currentid=$(cat ${idfile})
 	[ "${currentid}" = "${commitid}" ] && return
 
-	rm -rf ${VIGCOPY}
-	mkdir -p ${VIGCOPY}
-	git archive ${commitid} | tar -C ${VIGCOPY} -xvf -
+	rm -rf ${dst}
+	mkdir -p ${dst}
+	runcmd "git archive ${commitid} | tar -C ${dst} -xf -"
 	echo "${commitid}" > ${idfile}
 }
-register_command guest workspace_update "Update the vig copy with the master"
+
+guest_workspace_update() {
+	update_workspace ${VAGRANTGIT} ${VIGCOPY}
+}
+register_command guest workspace_update "Update the guest's vig copy"
+
+host_workspace_update() {
+	update_workspace ${VIG_DIR} ${VIG_TOP}/.vig
+}
+register_command host workspace_update "Update the host's vig copy"
 
 guest_workspace_init() {
 	guest_workspace_update
