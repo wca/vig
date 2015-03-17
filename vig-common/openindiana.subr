@@ -1,6 +1,6 @@
 host_vagrantup() {
-	runcmd ln -sf git/vig-common/openindiana-Vagrantfile Vagrantfile
-	runcmd ln -sf git/vig-common/openindiana-setup.sh setup.sh
+	runcmd ln -sf ${VIG_COPY}/vig-common/openindiana-Vagrantfile Vagrantfile
+	runcmd ln -sf ${VIG_COPY}/vig-common/openindiana-setup.sh setup.sh
 	runcmd rm -rf zfsdisks
 
 	# Destroy the VM if needed.

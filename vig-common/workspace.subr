@@ -3,37 +3,23 @@ git_last_commit() {
 	git log -1 --format=short --pretty=oneline $treeish | awk '{print $1}'
 }
 
-# The real vig update method.  Only difference is source/target directory.
+# The vig update method.
 update_workspace() {
-	src=$1
-	dst=$2
-
 	# Update the copy of vig, if needed.
-	cd ${src}
+	cd ${VIG_REPO}
 	commitid=$(git_last_commit master)
-	idfile=${dst}/.commitid
+	idfile=${VIG_COPY}/.commitid
 	[ -f "${idfile}" ] && currentid=$(cat ${idfile})
-	[ "${currentid}" = "${commitid}" ] && return
+	[ "${currentid}" = "${commitid}" ] && return 1
 
-	rm -rf ${dst}
-	mkdir -p ${dst}
-	runcmd "git archive ${commitid} | tar -C ${dst} -xf -"
+	rm -rf ${VIG_COPY}
+	mkdir -p ${VIG_COPY}
+	runcmd "git archive ${commitid} | tar -C ${VIG_COPY} -xf -"
 	echo "${commitid}" > ${idfile}
+	return 0
 }
-
-guest_workspace_update() {
-	update_workspace ${VAGRANTGIT} ${VIGCOPY}
-}
-register_command guest workspace_update "Update the guest's vig copy"
-
-host_workspace_update() {
-	update_workspace ${VIG_DIR} ${VIG_TOP}/.vig
-}
-register_command host workspace_update "Update the host's vig copy"
 
 guest_workspace_init() {
-	guest_workspace_update
-
 	# Fetch the closed binaries, if needed.  Cache them in case we need
 	# multiple working spaces.
 	closed_bins=${VAGRANTHOME}/.closed_bins

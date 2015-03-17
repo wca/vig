@@ -53,9 +53,29 @@ vig_main() {
 	export VIG_PATH=$(get_abspath $0)
 	export VIG_DIR=$(dirname $VIG_PATH)
 	export VIG_TOP=$(dirname $VIG_DIR)
+	export VIG_COPY=${VIG_TOP}/.vig
+	export VIG_REAL=${VIG_COPY}/vig
+	export VIG_REPO=${VIG_TOP}/git
+
+	if [ ! -d "${VIG_REPO}/.git" ]; then
+		echo "Incorrect setup: ${VIG_REPO} is not the vig git repo"
+		exit 1
+	fi
 
 	. ${VIG_DIR}/vig-common/common
 	load_subroutines
+
+	# Check to see if vig needs to be updated from the repository; if it
+	# does, re-exec from there (our original code is gone).
+	update_workspace
+
+	# If we're running out of the repository, run from the .vig
+	# directory instead.  This allows the 
+	if [ $? -eq 0 -o "$VIG_DIR" = "$VIG_REPO" ]; then
+		echo "*** Re-invoking as ${VIG_REAL} ..."
+		exec ${VIG_REAL} $*
+	fi
+	cd ${VIG_TOP}
 
 	domain=$1; shift
 	if [ "$domain" = "help" -o "$domain" = "-h" ]; then
