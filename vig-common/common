@@ -2,12 +2,7 @@
 # Constants used in this script.
 SNAPPLUGIN=vagrant-multiprovider-snap
 HIPSTER=oi-hipster-201410
-OI_PACKER_GIT="git://github.com/wca/oi-packer"
-VAGRANTHOME=/vagrant
-USERHOME=/export/home/vagrant
-VAGRANTGIT=${VAGRANTHOME}/git
-VIGCOPY=${VAGRANTHOME}/.vig
-GUESTVIG="${VIGCOPY}/vig guest"
+GUESTVIG="${VIG_COPY}/vig guest"
 
 ############################## COMMON ROUTINES ############################
 

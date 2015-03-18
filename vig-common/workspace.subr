@@ -22,7 +22,7 @@ update_workspace() {
 guest_workspace_init() {
 	# Fetch the closed binaries, if needed.  Cache them in case we need
 	# multiple working spaces.
-	closed_bins=${VAGRANTHOME}/.closed_bins
+	closed_bins=${VIG_TOP}/.closed_bins
 	closed_url=http://dlc.openindiana.org/dlc.sun.com/osol/on/downloads/20100817
 	mkdir -p ${closed_bins}
 	for f in on-closed-bins-nd on-closed-bins; do
