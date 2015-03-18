@@ -7,6 +7,7 @@ GUEST_WS="${GUEST_HOME}/ws/illumos-gate"
 GUEST_VIG="/vagrant/.vig/vig guest"
 GUEST_REPO="/vagrant/git"
 VIG_COMMON="${VIG_DIR}/vig-common"
+OI_PACKER_GIT="git://github.com/wca/oi-packer"
 
 ############################## COMMON ROUTINES ############################
 
