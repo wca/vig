@@ -59,7 +59,7 @@ export NIGHTLY_OPTIONS='-FnCDlmprt'
 export GATE='WS_GATE_NAME'
 
 # CODEMGR_WS - where is your workspace at (or what should nightly name it)
-export CODEMGR_WS="$HOME/ws/$GATE"
+export CODEMGR_WS="/vagrant/git"
 
 # Maximum number of dmake jobs.  The recommended number is 2 + NCPUS,
 # where NCPUS is the number of logical CPUs on your build system.
