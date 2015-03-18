@@ -21,7 +21,7 @@ host_setupvm() {
 register_command host setupvm "(Re-)Setup the VM"
 
 host_startvm() {
-	[ ! -e Vagrantfile ] && host_setupvm || runcmd vagrant up
+	[ ! -e ${VIG_TOP}/Vagrantfile ] && host_setupvm || runcmd vagrant up
 }
 register_command host startvm "Start the VM if needed"
 
