@@ -16,13 +16,16 @@ guest_build() {
 register_command guest build "Perform a build"
 
 host_build() {
-	[ -z "$BRANCH" ] && BRANCH="$1"
-	[ -z "$BRANCH" ] && BRANCH="illumos-master"
+	[ -n "$1" ] && BRANCH="$1"
 
+	curdir=$(pwd)
 	cd ${VIG_REPO}
-	runcmd git checkout $BRANCH
-	host_workspace_setup
-	cd ..
+		if [ ! -d exception_lists -o -n "$BRANCH" ]; then
+			[ -z "$BRANCH" ] && BRANCH="illumos-master"
+			runcmd git checkout $BRANCH
+		fi
+		host_workspace_setup
+	cd ${curdir}
 
 	# Make sure the VM is up.
 	host_startvm
