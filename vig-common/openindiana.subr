@@ -1,7 +1,6 @@
 host_setupvm() {
 	runcmd ln -sf .vig/vig-common/openindiana-Vagrantfile Vagrantfile
 	runcmd ln -sf .vig/vig-common/openindiana-setup.sh setup.sh
-	runcmd rm -rf zfsdisks
 
 	# Destroy the VM if needed.
 	ignorecmd vagrant destroy -f >/dev/null 2>&1
@@ -13,6 +12,7 @@ host_setupvm() {
 		VBoxManage showhdinfo ${disk} >/dev/null 2>&1 || continue
 		runcmd VBoxManage closemedium disk ${disk} --delete
 	done
+	runcmd rm -rf zfsdisks
 
 	# Bring up the VM, then restart it for setup changes to take effect.
 	runcmd vagrant up
