@@ -70,7 +70,9 @@ vig_main() {
 	update_workspace
 
 	# If we're running out of the repository, run from the .vig
-	# directory instead.  This allows the 
+	# directory instead.  This allows the repository directory to be
+	# manipulated to serve build/test needs without having to create a
+	# duplicate copy just for the vig scripts.
 	if [ $? -eq 0 -o "$VIG_DIR" = "$VIG_REPO" ]; then
 		echo "*** Re-invoking as ${VIG_REAL} ..."
 		exec ${VIG_REAL} $*
