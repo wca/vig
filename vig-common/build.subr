@@ -1,8 +1,10 @@
 guest_build() {
+	cd ${VIG_REPO}
+
 	# Make sure the nightly script is up to date.
 	# XXX Assumes no changes were made to it.  Is that valid?
 	cmp -s usr/src/tools/scripts/nightly.sh nightly.sh ||
-		cp usr/src/tools/scripts/nightly.sh nightly.sh
+		runcmd cp usr/src/tools/scripts/nightly.sh nightly.sh
 
 	# Tail the nightly log while the build is running.
 	/usr/gnu/bin/tail -F log/nightly.log &
