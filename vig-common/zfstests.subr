@@ -65,11 +65,11 @@ host_zfstests() {
 	zfstests_register_stoppers
 
 	## 2. Install the current packages into a new BE and restart.
-	runcmd vagrant ssh -c \"$GUESTVIG zfstest_prestart ${RUNTS}\"
+	runcmd vagrant ssh -c \"$GUEST_VIG zfstest_prestart ${RUNTS}\"
 	runcmd vagrant reload
 
 	## 3. Start the run, and copy back the results if possible.
-	runcmd vagrant ssh -c \"$GUESTVIG zfstest_actual ${RUNTS}\"
+	runcmd vagrant ssh -c \"$GUEST_VIG zfstest_actual ${RUNTS}\"
 
 	## 4. Stop by rolling back the snapshot and destroying it.
 	zfstests_teardown
