@@ -84,6 +84,13 @@ guest_workspace_setup() {
 		sed -e "s,WS_GATE_NAME,$(basename $(pwd)),g" \
 			${VIG_COMMON}/illumos.sh > illumos.sh
 	fi
+
+	# Make sure the nightly script is up to date.
+	# XXX Assumes no changes were made to it.  Is that valid?
+	if ! cmp -s usr/src/tools/scripts/nightly.sh nightly.sh; then
+		runcmd cp usr/src/tools/scripts/nightly.sh nightly.sh
+		runcmd chmod +x nightly.sh
+	fi
 }
 register_command guest workspace_setup
 

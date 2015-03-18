@@ -1,13 +1,8 @@
 guest_build() {
-	guest_workspace_setup $1
-	cd ${GUEST_WS}
+	[ -n "$1" ] && BRANCH="$1"
 
-	# Make sure the nightly script is up to date.
-	# XXX Assumes no changes were made to it.  Is that valid?
-	if ! cmp -s usr/src/tools/scripts/nightly.sh nightly.sh; then
-		runcmd cp usr/src/tools/scripts/nightly.sh nightly.sh
-		runcmd chmod +x nightly.sh
-	fi
+	guest_workspace_setup $BRANCH
+	cd ${GUEST_WS}
 
 	# Tail the nightly log while the build is running.
 	/usr/gnu/bin/tail -F log/nightly.log &
