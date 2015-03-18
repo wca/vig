@@ -29,6 +29,6 @@ host_build() {
 
 	# The illumos build always returns non-zero because there are
 	# currently-ignored lint warnings.
-	runssh "${GUESTVIG} build_init && (${GUESTVIG} build || true)"
+	runssh "${GUESTVIG} build || true"
 }
 register_command host build "Perform a build in the VM"
