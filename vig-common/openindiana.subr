@@ -1,6 +1,6 @@
-host_vagrantup() {
-	runcmd ln -sf ${VIG_COPY}/vig-common/openindiana-Vagrantfile Vagrantfile
-	runcmd ln -sf ${VIG_COPY}/vig-common/openindiana-setup.sh setup.sh
+host_setupvm() {
+	runcmd ln -sf .vig/vig-common/openindiana-Vagrantfile Vagrantfile
+	runcmd ln -sf .vig/vig-common/openindiana-setup.sh setup.sh
 	runcmd rm -rf zfsdisks
 
 	# Destroy the VM if needed.
@@ -18,7 +18,12 @@ host_vagrantup() {
 	runcmd vagrant up
 	runcmd vagrant reload
 }
-register_command host vagrantup "Bring up the VM"
+register_command host setupvm "(Re-)Setup the VM"
+
+host_startvm() {
+	[ ! -e Vagrantfile ] && host_setupvm || runcmd vagrant up
+}
+register_command host startvm "Start the VM if needed"
 
 host_fromscratch() {
 	host_build

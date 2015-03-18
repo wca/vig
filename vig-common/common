@@ -69,3 +69,17 @@ vig_reexec_noreturn() {
 	exec ${VIG_PATH} ${VIG_ARGS} $*
 	exit 127 # NOTREACHED
 }
+
+md5_file() {
+	fpath=$1
+	if which md5sum >/dev/null 2>&1; then
+		md5sum $fpath | awk '{print $1}'
+	elif which md5 >/dev/null 2>&1; then
+		md5 $fpath | awk '{print $4}'
+	elif which openssl >/dev/null 2>&1; then
+		openssl md5 $fpath | awk '{print $2}'
+	else
+		echo "*** ERROR: Can't find an MD5 implementation" >&2
+		exit 1
+	fi
+}

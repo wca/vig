@@ -56,7 +56,7 @@ export NIGHTLY_OPTIONS='-FnCDlmprt'
 
 # This is a variable for the rest of the script - GATE doesn't matter to
 # nightly itself
-export GATE='REPLACE_WITH_WS_GATE_NAME'
+export GATE='WS_GATE_NAME'
 
 # CODEMGR_WS - where is your workspace at (or what should nightly name it)
 export CODEMGR_WS="$HOME/ws/$GATE"

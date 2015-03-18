@@ -19,33 +19,47 @@ update_workspace() {
 	return 0
 }
 
-guest_workspace_init() {
+# This function is intended to be rerun anytime a build is needed.
+host_workspace_setup() {
 	# Fetch the closed binaries, if needed.  Cache them in case we need
 	# multiple working spaces.
 	closed_bins=${VIG_TOP}/.closed_bins
 	closed_url=http://dlc.openindiana.org/dlc.sun.com/osol/on/downloads/20100817
+
+	curdir=$(pwd)
+	cd ${VIG_REPO}
 	mkdir -p ${closed_bins}
 	for f in on-closed-bins-nd on-closed-bins; do
 		p=${f}.i386.tar.bz2
 		cached_p=${closed_bins}/${p}
-		if [ ! -f "${cached_p}" ]; then
-			wget -qO ${cached_p} ${closed_url}/${p}; ret=$?
-			[ $ret -ne 0 ] && exit $ret
-		fi
-		echo "Checking MD5 for ${cached_p} ..."
-		md5=$(md5sum ${cached_p} | awk '{print $1}')
 		case "$f" in
 		on-closed-bins-nd) expected="35f08b4630d85307940482a8470f1188" ;;
 		on-closed-bins)    expected="e6bdf40bd30d330e6a68f0515f6f2d24" ;;
 		*)		   echo "???" && exit 1 ;;
 		esac
+		if [ -f ".${p}.cksum" ]; then
+			cksum=$(cat .${p}.cksum)
+			[ "$cksum" = "$expected" ] && continue
+		fi
+
+		if [ ! -f "${cached_p}" ]; then
+			echo "Fetching build prereq ${p} ..."
+			runcmd wget -qO ${cached_p} ${closed_url}/${p}
+		fi
+		echo "Checking MD5 for ${cached_p} ..."
+		md5=$(md5_file ${cached_p})
 		if [ "$md5" != "$expected" ]; then
 			echo "MD5 checksum failure for ${f}"
 			exit 1
 		fi
 		echo "MD5 OK, extracting ${cached_p} ..."
 		tar xf ${cached_p}
+		echo "$expected" > .${p}.cksum
 	done
-	echo "Build setup done."
+	if [ ! -e illumos.sh -o ${VIG_COMMON}/illumos.sh -nt illumos.sh ]; then
+		sed -e "s,WS_GATE_NAME,$(basename $(pwd)),g" \
+			${VIG_COMMON}/illumos.sh > illumos.sh
+	fi
+	cd $curdir
 }
-register_command guest workspace_init "Perform the initial workspace setup"
+register_command host workspace_setup "Perform any needed workspace setup"

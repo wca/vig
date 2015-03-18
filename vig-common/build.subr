@@ -1,13 +1,9 @@
-guest_build_init() {
-	cp ${VIG_COMMON}/illumos.sh .
-	ws=$(basename $(pwd))
-	perl -pi -e "s,REPLACE_WITH_WS_GATE_NAME,${ws},g" illumos.sh
-	cp usr/src/tools/scripts/nightly.sh .
-	chmod +x nightly.sh
-}
-register_command guest build_init "Perform initial build setup"
-
 guest_build() {
+	# Make sure the nightly script is up to date.
+	# XXX Assumes no changes were made to it.  Is that valid?
+	cmp -s usr/src/tools/scripts/nightly.sh nightly.sh ||
+		cp usr/src/tools/scripts/nightly.sh nightly.sh
+
 	# Tail the nightly log while the build is running.
 	/usr/gnu/bin/tail -F log/nightly.log &
 	tailpid=$!
@@ -23,13 +19,13 @@ host_build() {
 	[ -z "$BRANCH" ] && BRANCH="$1"
 	[ -z "$BRANCH" ] && BRANCH="illumos-master"
 
-	# Checkout the branch and initiate a build.
-	cd git
+	cd ${VIG_REPO}
 	runcmd git checkout $BRANCH
+	host_workspace_setup
 	cd ..
 
 	# Make sure the VM is up.
-	host_vagrantup
+	host_startvm
 
 	# The illumos build always returns non-zero because there are
 	# currently-ignored lint warnings.
