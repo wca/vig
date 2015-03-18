@@ -97,7 +97,7 @@ host_workspace_setup() {
 	curdir=$(pwd)
 
 	cd ${VIG_REPO}
-	runcmd mkdir -p ${CLOSED_BINS_DIR}
+	[ ! -d ${CLOSED_BINS_DIR} ] && runcmd mkdir -p ${CLOSED_BINS_DIR}
 
 	for closed_bin in ${CLOSED_BINS}; do
 		closed_p=${closed_bin}.i386.tar.bz2
