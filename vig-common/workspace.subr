@@ -19,21 +19,15 @@ update_workspace() {
 	return 0
 }
 
-closed_bin_cksum() {
-	closed=$1
-
-	case "$closed" in
-	on-closed-bins-nd) echo "35f08b4630d85307940482a8470f1188" ;;
-	on-closed-bins)    echo "e6bdf40bd30d330e6a68f0515f6f2d24" ;;
-	*)		   echo "???" >&2 && exit 1 ;;
-	esac
-}
-
 check_closed_cksum() {
 	prefix=$1
 	closed=$2
 
-	expected=$(closed_bin_cksum ${closed})
+	case "$closed" in
+	on-closed-bins-nd) expected="35f08b4630d85307940482a8470f1188" ;;
+	on-closed-bins)    expected="e6bdf40bd30d330e6a68f0515f6f2d24" ;;
+	*)		   echo "???" >&2 && exit 1 ;;
+	esac
 
 	cksum_cookie="${prefix}/.${closed}.cksum"
 	if [ -f "${closed_cookie}" ]; then
@@ -103,9 +97,9 @@ host_workspace_setup() {
 		closed_p=${closed_bin}.i386.tar.bz2
 		cached_p=${CLOSED_BINS_DIR}/${closed_p}
 
+		expected=$(check_closed_cksum ${dir} ${closed_bin})
 		if [ -f "${cached_p}" ]; then
 			dir=${CLOSED_BINS_DIR}
-			expected=$(check_closed_cksum ${dir} ${closed_bin})
 			[ -z "$expected" ] && continue
 		fi
 
