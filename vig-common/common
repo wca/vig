@@ -3,6 +3,7 @@
 SNAPPLUGIN=vagrant-multiprovider-snap
 HIPSTER=oi-hipster-201410
 GUESTVIG="${VIG_COPY}/vig guest"
+VIG_COMMON="${VIG_DIR}/vig-common"
 
 ############################## COMMON ROUTINES ############################
 
