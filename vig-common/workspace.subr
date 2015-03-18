@@ -26,12 +26,12 @@ check_closed_cksum() {
 	case "$closed" in
 	on-closed-bins-nd) expected="35f08b4630d85307940482a8470f1188" ;;
 	on-closed-bins)    expected="e6bdf40bd30d330e6a68f0515f6f2d24" ;;
-	*)		   echo "???" >&2 && exit 1 ;;
+	*)		   echo "*** ERROR: What's '${closed}'?" >&2 ;;
 	esac
 
 	cksum_cookie="${prefix}/.${closed}.cksum"
-	if [ -f "${closed_cookie}" ]; then
-		cksum=$(cat ${closed_cookie})
+	if [ -f "${cksum_cookie}" ]; then
+		cksum=$(cat ${cksum_cookie})
 		[ "$cksum" = "$expected" ] && return
 	fi
 
@@ -97,11 +97,8 @@ host_workspace_setup() {
 		closed_p=${closed_bin}.i386.tar.bz2
 		cached_p=${CLOSED_BINS_DIR}/${closed_p}
 
-		expected=$(check_closed_cksum ${dir} ${closed_bin})
-		if [ -f "${cached_p}" ]; then
-			dir=${CLOSED_BINS_DIR}
-			[ -z "$expected" ] && continue
-		fi
+		expected=$(check_closed_cksum ${CLOSED_BINS_DIR} ${closed_bin})
+		[ -f "${cached_p}" -a -z "$expected" ] && continue
 
 		fetch_url ${CLOSED_URL}/${closed_p} ${cached_p}
 		echo "Checking MD5 for ${cached_p} ..."
