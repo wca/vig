@@ -113,8 +113,7 @@ host_workspace_setup() {
 			[ -z "$expected" ] && continue
 		fi
 
-		echo "Fetching build prereq ${p} ..."
-		runcmd wget -qO ${cached_p} ${CLOSED_URL}/${closed_p}
+		fetch_url ${CLOSED_URL}/${closed_p} ${cached_p}
 		echo "Checking MD5 for ${cached_p} ..."
 		md5=$(md5_file ${cached_p})
 		if [ "$md5" != "$expected" ]; then
