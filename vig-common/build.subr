@@ -1,5 +1,6 @@
 guest_build() {
-	cd ${VIG_REPO}
+	guest_workspace_setup $1
+	cd ${GUEST_WS}
 
 	# Make sure the nightly script is up to date.
 	# XXX Assumes no changes were made to it.  Is that valid?
@@ -22,20 +23,12 @@ register_command guest build "Perform a build"
 host_build() {
 	[ -n "$1" ] && BRANCH="$1"
 
-	curdir=$(pwd)
-	cd ${VIG_REPO}
-		if [ ! -d exception_lists -o -n "$BRANCH" ]; then
-			[ -z "$BRANCH" ] && BRANCH="illumos-master"
-			runcmd git checkout $BRANCH
-		fi
-		host_workspace_setup
-	cd ${curdir}
-
-	# Make sure the VM is up.
+	# Set up the workspace and start the VM if necessary.
+	host_workspace_setup
 	host_startvm
 
 	# The illumos build always returns non-zero because there are
 	# currently-ignored lint warnings.
-	runssh "${GUESTVIG} build || true"
+	runssh "${GUESTVIG} build ${BRANCH} || true"
 }
 register_command host build "Perform a build in the VM"
