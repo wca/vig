@@ -65,7 +65,7 @@ guest_workspace_setup() {
 		expected=$(check_closed_cksum ${GUEST_WS} ${closed_bin})
 		[ -z "$expected" ] && continue
 
-		tar xf ${CLOSED_BINS_DIR}/${closed_bin}
+		runcmd tar xf ${CLOSED_BINS_DIR}/${closed_bin}.i386.tar.bz2
 		echo "$expected" > .${closed_bin}.cksum
 	done
 
