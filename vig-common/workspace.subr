@@ -13,7 +13,7 @@ update_workspace() {
 	[ "${currentid}" = "${commitid}" ] && return 1
 
 	rm -rf ${VIG_COPY}
-	mkdir -p ${VIG_COPY}
+	runcmd mkdir -p ${VIG_COPY}
 	runcmd "git archive ${commitid} | tar -C ${VIG_COPY} -xf -"
 	echo "${commitid}" > ${idfile}
 	return 0
@@ -44,16 +44,12 @@ check_closed_cksum() {
 	echo $expected
 }
 
-CLOSED_BINS="on-closed-bins-nd on-closed-bins"
-CLOSED_BINS_DIR="${VIG_TOP}/.closed_bins"
-CLOSED_URL="http://dlc.openindiana.org/dlc.sun.com/osol/on/downloads/20100817"
-
 guest_workspace_setup() {
 	[ -n "$1" ] && BRANCH="$1"
 
 	if [ ! -d "${GUEST_WS}/.git" ]; then
 		parent=$(dirname ${GUEST_WS})
-		mkdir -p ${parent}
+		runcmd mkdir -p ${parent}
 		cd ${parent}
 		git clone ${GUEST_REPO} illumos-gate
 	fi
@@ -101,7 +97,7 @@ host_workspace_setup() {
 	curdir=$(pwd)
 
 	cd ${VIG_REPO}
-	mkdir -p ${closed_bins}
+	runcmd mkdir -p ${closed_bins}
 
 	for closed_bin in ${CLOSED_BINS}; do
 		closed_p=${closed_bin}.i386.tar.bz2

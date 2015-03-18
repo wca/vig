@@ -74,7 +74,8 @@ vig_main() {
 	# manipulated to serve build/test needs without having to create a
 	# duplicate copy just for the vig scripts.
 	if [ $? -eq 0 -o "$VIG_DIR" = "$VIG_REPO" ]; then
-		echo "*** Re-invoking as ${VIG_REAL} ..."
+		[ "$VIG_DIR" = "$VIG_REPO" ] &&
+			echo "*** Re-invoking as ${VIG_REAL} ..."
 		exec ${VIG_REAL} $*
 	fi
 	cd ${VIG_TOP}

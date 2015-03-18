@@ -12,7 +12,6 @@ fetch_url() {
 	target=$2
 
 	cmd=$(which_one_of wget curl fetch)
-	echo "Fetching build prereq ${p} ..."
 	case "$cmd" in
 		wget)		runcmd wget -O ${target} ${url} ;;
 		curl|fetch)	runcmd $cmd -o ${target} ${url} ;;

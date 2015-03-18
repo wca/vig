@@ -54,7 +54,7 @@ host_zfstests() {
 		RUNTS="$(date -u '+%Y.%m.%d.%H%M%S')"
 		LOGDIR="${VIG_DIR}/zfstests/${RUNTS}"
 		[ -d "$LOGDIR" ] && echo "$LOGDIR already exists?" && exit 127
-		mkdir -p ${LOGDIR}
+		runcmd mkdir -p ${LOGDIR}
 		vig_reexec_noreturn ${RUNTS} | tee ${LOGDIR}/log
 	fi
 	LOGDIR="${VIG_DIR}/zfstests/${RUNTS}"

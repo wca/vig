@@ -8,6 +8,9 @@ GUEST_VIG="/vagrant/.vig/vig guest"
 GUEST_REPO="/vagrant/git"
 VIG_COMMON="${VIG_DIR}/vig-common"
 OI_PACKER_GIT="git://github.com/wca/oi-packer"
+CLOSED_BINS="on-closed-bins-nd on-closed-bins"
+CLOSED_BINS_DIR="${VIG_TOP}/.closed_bins"
+CLOSED_URL="http://dlc.openindiana.org/dlc.sun.com/osol/on/downloads/20100817"
 
 ############################## COMMON ROUTINES ############################
 
