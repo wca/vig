@@ -74,6 +74,6 @@ load_subroutines() {
 }
 
 vig_reexec_noreturn() {
-	exec ${VIG_PATH} ${VIG_ARGS} $*
+	exec ${VIG_REAL} ${VIG_ARGS} $*
 	exit 127 # NOTREACHED
 }
