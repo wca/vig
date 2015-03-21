@@ -52,12 +52,12 @@ host_zfstests() {
 	RUNTS="$1"
 	if [ -z "$RUNTS" ]; then
 		RUNTS="$(date -u '+%Y.%m.%d.%H%M%S')"
-		LOGDIR="${VIG_DIR}/zfstests/${RUNTS}"
+		LOGDIR="${VIG_TOP}/zfstests/${RUNTS}"
 		[ -d "$LOGDIR" ] && echo "$LOGDIR already exists?" && exit 127
 		runcmd mkdir -p ${LOGDIR}
 		vig_reexec_noreturn ${RUNTS} | tee ${LOGDIR}/log
 	fi
-	LOGDIR="${VIG_DIR}/zfstests/${RUNTS}"
+	LOGDIR="${VIG_TOP}/zfstests/${RUNTS}"
 
 	## 1. Create a snapshot of the VM and bring it up if needed.
 	##    Once the snapshot is created, trap signals to shutdown properly.
