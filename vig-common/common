@@ -55,6 +55,10 @@ runssh() {
 	runcmd vagrant ssh -c \"$*\"
 }
 
+runguest() {
+	runssh $GUEST_VIG $*
+}
+
 checkcmd() {
 	eval $*; ret=$?
 	[ $ret -ne 0 ] && stop
