@@ -59,19 +59,18 @@ host_zfstests() {
 	fi
 	LOGDIR="${VIG_TOP}/zfstests/${RUNTS}"
 
-	host_startvm
-
 	## 1. Create a snapshot of the VM and bring it up if needed.
 	##    Once the snapshot is created, trap signals to shutdown properly.
+	host_startvm
 	runcmd vagrant snap take default --name $RUNTS
 	zfstests_register_stoppers
 
 	## 2. Install the current packages into a new BE and restart.
-	runguest zfstest_prestart $RUNTS
+	runguest zfstests_prestart $RUNTS
 	runcmd vagrant reload
 
 	## 3. Start the run, and copy back the results if possible.
-	runguest zfstest_actual $RUNTS
+	runguest zfstests_actual $RUNTS
 
 	## 4. Stop by rolling back the snapshot and destroying it.
 	zfstests_teardown
