@@ -2,8 +2,9 @@ guest_zfstests_prestart() {
 	# Install the package set for on-nightly and activate its BE.
 	RUNTS="$1"
 	[ -z "$RUNTS" ] && echo "Error: must specify build runtime timestamp"
-	sudo ${GUEST_WS}/usr/src/tools/scripts/onu -t $RUNTS \
-		-d $gate/packages/i386/nightly
+	cd $GUEST_WS
+	sudo $GUEST_WS/usr/src/tools/scripts/onu -t $RUNTS \
+		-d $GUEST_WS/packages/i386/nightly
 }
 register_command guest zfstests_prestart "Pre-setup for running the tests"
 
