@@ -3,7 +3,7 @@ guest_upgrade() {
 	[ -z "$BENAME" ] && echo "Error: Must specify upgrade BE name" && exit 1
 
 	cd $GUEST_WS
-	sudo $GUEST_WS/usr/src/tools/scripst/onu -t $BENAME \
+	sudo $GUEST_WS/usr/src/tools/scripts/onu -t $BENAME \
 		-d $GUEST_WS/packages/i386/nightly
 }
 register_command guest upgrade "Upgrade the guest using built sources"
