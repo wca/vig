@@ -77,7 +77,7 @@ vig_main() {
 	if [ $? -eq 0 -o "$VIG_DIR" = "$VIG_REPO" ]; then
 		[ "$VIG_DIR" = "$VIG_REPO" ] &&
 			echo "*** Re-invoking as ${VIG_REAL} ..."
-		exec ${VIG_REAL} $*
+		vig_reexec_noreturn
 	fi
 	cd ${VIG_TOP}
 
