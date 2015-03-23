@@ -21,7 +21,8 @@ guest_zfstests_actual() {
 	resultsdir="$(ls -1td $resultsparent/* | head -1 | awk '{print $1}')"
 	tsdir=/vagrant/zfstests/${RUNTS}
 	echo "ZFS tests exited $ret, copying from $resultsdir to $tsdir ..."
-	cp -rp $resultsdir/* $tsdir
+	runcmd sudo cp -rp $resultsdir/\* $tsdir
+	runcmd sudo chown -R vagrant $tsdir
 	exit $ret
 }
 register_command guest zfstests_actual "Actually run the ZFS tests"
