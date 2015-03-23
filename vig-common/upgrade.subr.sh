@@ -1,6 +1,6 @@
 guest_upgrade() {
 	BENAME="$1"
-	[ -z "$BENAME" ] && echo "Error: Must specify upgrade BE name"
+	[ -z "$BENAME" ] && echo "Error: Must specify upgrade BE name" && exit 1
 
 	cd $GUEST_WS
 	sudo $GUEST_WS/usr/src/tools/scripst/onu -t $BENAME \
@@ -10,7 +10,7 @@ register_command guest upgrade "Upgrade the guest using built sources"
 
 host_upgrade_guest() {
 	BENAME="$1"
-	[ -z "$BENAME" ] && echo "Error: Must specify upgrade BE name"
+	[ -z "$BENAME" ] && echo "Error: Must specify upgrade BE name" && exit 1
 	OPTS="$2"
 
 	host_startvm
