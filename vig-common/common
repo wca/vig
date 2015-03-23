@@ -71,7 +71,7 @@ ignorecmd() {
 }
 
 load_subroutines() {
-	for subr in ${VIG_DIR}/vig-common/*.subr; do
+	for subr in ${VIG_DIR}/vig-common/*.subr.sh; do
 		. ${subr}
 	done
 	trap 'stop' TERM INT
