@@ -13,6 +13,9 @@ host_upgrade_guest() {
 	[ -z "$BENAME" ] && echo "Error: Must specify upgrade BE name" && exit 1
 	OPTS="$2"
 
+	# Allow specifying "-" as the BE name to generate a date stamp.
+	[ "$BENAME" = "-" ] && BENAME="$(date -u '+%Y.%m.%d.%H%M%S')"
+
 	host_startvm
 	runcmd vagrant snap take default --name pre-upgrade-$BENAME
 	runguest upgrade $BENAME
@@ -21,4 +24,4 @@ host_upgrade_guest() {
 	[ "$OPTS" = "nopostsnap" ] &&
 		runcmd vagrant snap take default --name post-upgrade-$BENAME
 }
-register_command host upgrade_guest
+register_command host upgrade_guest "Upgrade the guest using built sources"
