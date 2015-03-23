@@ -57,6 +57,7 @@ host_zfstests() {
 		[ -d "$LOGDIR" ] && echo "$LOGDIR already exists?" && exit 127
 		runcmd mkdir -p ${LOGDIR}
 		vig_reexec_noreturn ${RUNTS} | tee ${LOGDIR}/log
+		exit $?
 	fi
 	LOGDIR="${VIG_TOP}/zfstests/${RUNTS}"
 
