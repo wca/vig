@@ -1,13 +1,18 @@
-# Will's Illumos/FreeBSD merge repo
+# Will's Illumos change test repository
 
-This repository is an amalgamation of Illumos and FreeBSD repositories.  It
-serves as an export site of Spectra Logic ZFS changes, with branches against
-various versions of FreeBSD/stable and Illumos.
+This repository contains an unmodified fork of the illumos-gate master under
+the illumos-master branch.  This repository's 'master' branch is a
+disconnected branch that contains scripts intended to assist in testing
+changes against illumos-gate, within a Vagrant-managed virtual machine.
 
 # Usage
 
 This repository is intended to be forked and used for illumos-gate patches.
-This section details how to do so.
+Contributions to this repository's master copy should consist solely of
+changes to the master branch's script collection.  Periodically, the
+illumos-master branch will be updated from the master illumos-gate repository.
+
+This section details how to use forks of this repository.
 
 First, install VirtualBox or VMware, Vagrant, and the vagrant-multiprovider-snap
 plugin.  The last of these will usually be installed as follows:
@@ -39,7 +44,7 @@ called 'git':
 Now, edit git/openindiana/Vagrantfile if necessary (the default machine
 configuration is 4 VCPUs and 8GB), then fire up an initial build & test run:
 
-* `./git/openindiana/fromscratch.sh`
+* `./git/vig host fromscratch`
 
 This will take between 4 and 24 hours, depending on your system.  The time
 is spent as follows:
