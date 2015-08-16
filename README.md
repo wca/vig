@@ -9,20 +9,24 @@ various versions of FreeBSD/stable and Illumos.
 This repository is intended to be forked and used for illumos-gate patches.
 This section details how to do so.
 
-First, install VirtualBox, Vagrant, and the vagrant-multiprovider-snap
+First, install VirtualBox or VMware, Vagrant, and the vagrant-multiprovider-snap
 plugin.  The last of these will usually be installed as follows:
 
 * `vagrant plugin install vagrant-multiprovider-snap`
 
-Then, create a Vagrant VirtualBox box for OpenIndiana hipster:
+Then, create a Vagrant box for OpenIndiana hipster:
 
 * `git clone git://github.com/wca/oi-packer`
 * `cd oi-packer && packer build template.json`
 
-This will take a while (about an hour), mostly because the steps include a
-lot of extra waits for slower machines.  Next, import the Vagrant box:
+Note that you may want the `-only=vmware-iso` or `-only=virtualbox-iso`
+arguments to `packer build`.
 
-* `vagrant box add --name oi-hipster-201410 ./oi-hipster-201410-virtualbox.box`
+This will take a while (about an hour), mostly because the steps include a
+lot of extra waits for slower machines.  Next, import the Vagrant box that
+created for the hypervisor you want:
+
+* `vagrant box add --name oi-hipster-20150330 ./oi-hipster-20150330.box`
 
 Once this is done, create a directory to hold metadata for the Vagrant
 machine you'll be creating, then clone this repository to a subdirectory
