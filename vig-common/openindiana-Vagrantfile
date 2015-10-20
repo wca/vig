@@ -28,7 +28,7 @@ end
 
 Vagrant.configure(2) do |config|
   # Every Vagrant virtual environment requires a box to build off of.
-  config.vm.box = "oi-hipster-201410"
+  config.vm.box = "oi-hipster-20151003-virtualbox"
 
   config.vm.provider "virtualbox" do |vb|
     # Bump the RAM and CPU to correspond to a proper build VM.
