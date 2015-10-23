@@ -246,3 +246,7 @@ export CW_NO_SHADOW=1
 export ONLY_LINT_DEFS=-I${SPRO_ROOT}/sunstudio12.1/prod/include/lint
 # Required for Illumian.
 #export PKGFMT_OUTPUT=v1
+
+# Use Perl 5.22 since OI hipster no longer ships 5.10
+export PERL_VERSION="5.22"
+export PERL_PKGVERS="-522"
