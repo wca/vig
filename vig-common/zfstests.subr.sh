@@ -3,7 +3,7 @@ guest_zfstests() {
 	[ -z "$RUNTS" ] && echo "Must specify build runtime timestamp" && exit 1
 
 	# Run the test suite and save the result to return as the final exit.
-	export DISKS="c2t1d0p0 c2t2d0p0 c2t3d0p0 c2t4d0p0 c2t5d0p0"
+	export DISKS="c3t1d0p0 c3t2d0p0 c3t3d0p0 c3t4d0p0 c3t5d0p0"
 	/opt/zfs-tests/bin/zfstest
 	ret=$?
 
