@@ -23,7 +23,7 @@ host_upgrade_guest() {
 	runguest upgrade $BENAME
 	runcmd vagrant reload
 
-	[ "$OPTS" = "nopostsnap" ] &&
+	[ "$OPTS" != "nopostsnap" ] &&
 		runcmd vagrant snap take default --name post-upgrade-$BENAME
 }
 register_command host upgrade_guest "Upgrade the guest using built sources"
