@@ -28,9 +28,7 @@ pkg install \
  pkg:/library/security/trousers \
  pkg:/print/cups \
  pkg:/print/filter/ghostscript \
- pkg:/runtime/perl-510 \
- pkg:/runtime/perl-510/extra \
- pkg:/runtime/perl-510/module/sun-solaris \
+ pkg:/runtime/perl-522 \
  pkg:/system/library/math/header-math \
  pkg:/system/library/install \
  pkg:/system/library/dbus \
