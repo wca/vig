@@ -49,6 +49,7 @@ host_zfstests() {
 		runcmd mkdir -p ${LOGDIR}
 		VIG_ARGS="host zfstests"
 		vig_reexec_noreturn ${RUNTS} | tee ${LOGDIR}/log
+		exit $? # exit code for tee subshell
 	fi
 	LOGDIR="${VIG_TOP}/zfstests/${RUNTS}"
 
