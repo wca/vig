@@ -5,6 +5,7 @@ guest_upgrade() {
 	cd $GUEST_WS
 	sudo $GUEST_WS/usr/src/tools/scripts/onu -t $BENAME \
 		-d $GUEST_WS/packages/i386/nightly
+	sudo beadm unmount $BENAME
 	sudo beadm activate $BENAME
 }
 register_command guest upgrade "Upgrade the guest using built sources"
