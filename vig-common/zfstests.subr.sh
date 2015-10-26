@@ -20,10 +20,10 @@ guest_zfstests() {
 register_command guest zfstests "Actually run the ZFS tests"
 
 zfstests__stop_rollback() {
-	vagrant snap rollback default --name "${RUNTS}"
+	vagrant snap rollback default --name "pre-upgrade-${RUNTS}"
 }
 zfstests__stop_delete() {
-	vagrant snap delete default --name "${RUNTS}"
+	vagrant snap delete default --name "pre-upgrade-${RUNTS}"
 }
 zfstests_register_stoppers() {
 	# Insert in reverse order of actual execution.
@@ -50,7 +50,7 @@ host_zfstests() {
 		[ -d "$LOGDIR" ] && echo "$LOGDIR already exists?" && exit 127
 		runcmd mkdir -p ${LOGDIR}
 		VIG_ARGS="host zfstests"
-		vig_reexec_noreturn ${RUNTS} | tee ${LOGDIR}/log
+		vig_reexec_noreturn ${RUNTS} 2>&1 | tee ${LOGDIR}/log
 		exit $? # exit code for tee subshell
 	fi
 	LOGDIR="${VIG_TOP}/zfstests/${RUNTS}"
