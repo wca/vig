@@ -3,8 +3,8 @@ guest_zfstests() {
 	[ -z "$RUNTS" ] && echo "Must specify build runtime timestamp" && exit 1
 
 	# Run the test suite and save the result to return as the final exit.
-	# Note -a here won't use the root pool since it's not a "free disk".
-	/opt/zfs-tests/bin/zfstest -a
+	export DISKS="c3t1d0 c3t2d0 c3t3d0 c3t4d0 c3t5d0"
+	/opt/zfs-tests/bin/zfstest
 	ret=$?
 
 	resultsparent=/var/tmp/test_results
