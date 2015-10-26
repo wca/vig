@@ -20,9 +20,11 @@ guest_zfstests() {
 register_command guest zfstests "Actually run the ZFS tests"
 
 zfstests__stop_rollback() {
+	[ -n "$NO_TEARDOWN" ] && return
 	vagrant snap rollback default --name "pre-upgrade-${RUNTS}"
 }
 zfstests__stop_delete() {
+	[ -n "$NO_TEARDOWN" ] && return
 	vagrant snap delete default --name "pre-upgrade-${RUNTS}"
 }
 zfstests_register_stoppers() {
