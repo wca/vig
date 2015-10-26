@@ -3,12 +3,14 @@ guest_zfstests() {
 	[ -z "$RUNTS" ] && echo "Must specify build runtime timestamp" && exit 1
 
 	# Run the test suite and save the result to return as the final exit.
-	export DISKS="c3t1d0p0 c3t2d0p0 c3t3d0p0 c3t4d0p0 c3t5d0p0"
-	/opt/zfs-tests/bin/zfstest
+	# Note -a here won't use the root pool since it's not a "free disk".
+	/opt/zfs-tests/bin/zfstest -a
 	ret=$?
 
 	resultsparent=/var/tmp/test_results
+	[ ! -d $resultsparent ] && echo "No results parent!" && exit $ret
 	resultsdir="$(ls -1td $resultsparent/* | head -1 | awk '{print $1}')"
+	[ -z "$resultsdir" ] && echo "No results dir!" && exit $ret
 	tsdir=/vagrant/zfstests/${RUNTS}
 	echo "ZFS tests exited $ret, copying from $resultsdir to $tsdir ..."
 	runcmd sudo cp -rp $resultsdir/\* $tsdir
