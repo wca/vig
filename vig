@@ -55,7 +55,7 @@ vig_main() {
 	export VIG_TOP=$(dirname $VIG_DIR)
 	export VIG_COPY=${VIG_TOP}/.vig
 	export VIG_REAL=${VIG_COPY}/vig
-	export VIG_REPO=${VIG_TOP}/git
+	export VIG_REPO=${VIG_TOP}/vig
 
 	if [ ! -d "${VIG_REPO}/.git" ]; then
 		echo "Incorrect setup: ${VIG_REPO} is not the vig git repo"
