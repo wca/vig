@@ -16,7 +16,7 @@ guest_build() {
 register_command guest build "Perform a build"
 
 host_build() {
-	[ -n "$1" ] && BRANCH="$1"
+	[ -n "$1" ] && BRANCH="$1" || BRANCH="master"
 
 	# Set up the workspace and start the VM if necessary.
 	host_workspace_setup
