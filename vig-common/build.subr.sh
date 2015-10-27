@@ -17,6 +17,10 @@ register_command guest build "Perform a build"
 
 host_build() {
 	[ -n "$1" ] && BRANCH="$1" || BRANCH="master"
+	if ! git show "$BRANCH" >/dev/null 2>&1; then
+		echo "Error: Unknown branch '$BRANCH'!"
+		exit 1
+	fi
 
 	# Set up the workspace and start the VM if necessary.
 	host_workspace_setup
