@@ -1,5 +1,5 @@
 guest_build() {
-	[ -n "$1" ] && BRANCH="$1"
+	[ -n "$1" ] && BRANCH="$1" && shift
 
 	guest_workspace_setup $BRANCH
 	cd ${GUEST_WS}
