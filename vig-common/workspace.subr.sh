@@ -56,7 +56,7 @@ guest_workspace_setup() {
 	# This expects the workspace to be clean, obviously.  If this is not
 	# the case, 'vig guest build' is meant for pre-commit change testing.
 	if [ ! -d exception_lists -o -n "$BRANCH" ]; then
-		[ -z "$BRANCH" ] && BRANCH="illumos-master"
+		[ -z "$BRANCH" ] && BRANCH="master"
 		runcmd git checkout $BRANCH
 	fi
 
