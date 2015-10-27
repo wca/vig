@@ -17,6 +17,8 @@ register_command guest build "Perform a build"
 
 host_build() {
 	[ -n "$1" ] && BRANCH="$1" || BRANCH="master"
+	cd ${HOST_REPO} || \
+		(echo "No illumos-gate companion repository?" && exit 1)
 	if ! git show "$BRANCH" >/dev/null 2>&1; then
 		echo "Error: Unknown branch '$BRANCH'!"
 		exit 1
