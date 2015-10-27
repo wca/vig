@@ -43,7 +43,7 @@ machine you'll be creating, then clone this repository to it:
 Now, edit vig/openindiana/Vagrantfile if necessary (the default machine
 configuration is 4 VCPUs and 8GB), then fire up an initial build & test run:
 
-* `./git/vig host fromscratch`
+* `./vig/vig host fromscratch`
 
 This will take between 4 and 24 hours, depending on your system.  The time
 is spent as follows:
@@ -51,3 +51,14 @@ is spent as follows:
 * ~10% VM setup, test boot environment install/setup, other overhead
 * ~35% building illumos-gate
 * ~55% running the zfs test suite
+
+# Performing incremental build/test cycles
+
+To run an incremental test against a specific branch of your illumos-gate
+companion repository:
+
+* `./vig/vig host build <branch>`
+* `./vig/vig host zfstests`
+
+These two commands can be run independently, although it's worth noting that
+the zfstests command expects that a build has already been completed.
