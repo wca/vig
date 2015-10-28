@@ -15,16 +15,6 @@ guest_build() {
 }
 register_command guest build "Perform a complete build"
 
-ZFS_DIRS="$ZFS_DIRS lib/libzfs"
-ZFS_DIRS="$ZFS_DIRS lib/libzfs_core"
-ZFS_DIRS="$ZFS_DIRS lib/libzpool"
-ZFS_DIRS="$ZFS_DIRS cmd/zdb"
-ZFS_DIRS="$ZFS_DIRS cmd/zfs"
-ZFS_DIRS="$ZFS_DIRS cmd/zhack"
-ZFS_DIRS="$ZFS_DIRS cmd/zinject"
-ZFS_DIRS="$ZFS_DIRS cmd/zpool"
-ZFS_DIRS="$ZFS_DIRS cmd/zstreamdump"
-ZFS_DIRS="$ZFS_DIRS cmd/ztest"
 guest_buildonlyzfs() {
 	[ ! -d "${GUEST_WS}/packages" ] && \
 		echo "Error: Must have completed a full build" && exit 1
@@ -32,12 +22,7 @@ guest_buildonlyzfs() {
 	cd ${GUEST_WS}
 	git pull -r || exit $?
 	bldenv illumos.sh
-	for dir in $ZFS_DIRS; do
-		cd ${GUEST_WS}/usr/src/$dir
-		dmake
-		ret=$?
-		[ $ret -ne 0 ] && break
-	done
+	./usr/src/tools/quick/make-zfs lint
 	exit $ret
 }
 register_command guest buildonlyzfs "Build only ZFS; useful for compile testing"
