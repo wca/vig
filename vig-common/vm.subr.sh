@@ -30,3 +30,8 @@ host_fromscratch() {
 	host_zfstests
 }
 register_command host fromscratch "Perform everything from scratch"
+
+host_runguest() {
+	runguest $*
+}
+register_command host runguest "Run an arbitrary guest vig command"
