@@ -22,10 +22,12 @@ guest_buildonlyzfs() {
 	[ -z "$BRANCH" ] && BRANCH="master"
 
 	cd ${GUEST_WS}
+	# First pull to see if the branch is available, then check it out
+	# and pull again, rebasing.
 	git pull -r || exit $?
-	git checkout ${BRANCH}
-	bldenv illumos.sh
-	./usr/src/tools/quick/make-zfs lint
+	git checkout ${BRANCH} || exit $?
+	git pull -r || exit $?
+	bldenv illumos.sh ./usr/src/tools/quick/make-zfs lint
 	exit $ret
 }
 register_command guest buildonlyzfs "Build only ZFS; useful for compile testing"
