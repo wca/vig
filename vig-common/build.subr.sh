@@ -27,7 +27,7 @@ guest_buildonlyzfs() {
 	git pull -r || exit $?
 	git checkout ${BRANCH} || exit $?
 	git pull -r || exit $?
-	bldenv illumos.sh ./usr/src/tools/quick/make-zfs lint
+	bldenv illumos.sh './usr/src/tools/quick/make-zfs lint'
 	exit $ret
 }
 register_command guest buildonlyzfs "Build only ZFS; useful for compile testing"
