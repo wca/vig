@@ -1,10 +1,29 @@
 guest_zfstests() {
 	RUNTS="$1"
 	[ -z "$RUNTS" ] && echo "Must specify build runtime timestamp" && exit 1
+	shift
+
+	# Any additional arguments specify individual test suites.
+	ZT_ARGS=""
+	if [ ! -z "$*" ]; then
+		tests=/opt/zfs-tests/tests/functional
+		cp ${VIG_TOP}/zfstests.run /tmp/test.run
+		cd $tests
+		for i in $*; do
+			tests=$(ls -1 $i | egrep -v '(^(cleanup|setup)|\.)')
+			echo "[$tests/$i]" >> /tmp/test.run
+			str=""
+			for t in $tests; do
+				str="${str}'${t}',"
+			done
+			echo "tests = [$str]" >> /tmp/test.run
+		done
+		ZT_ARGS="$ZT_ARGS -c /tmp/test.run"
+	fi
 
 	# Run the test suite and save the result to return as the final exit.
 	export DISKS="c3t1d0 c3t2d0 c3t3d0 c3t4d0 c3t5d0"
-	/opt/zfs-tests/bin/zfstest
+	/opt/zfs-tests/bin/zfstest $ZT_ARGS
 	ret=$?
 
 	resultsparent=/var/tmp/test_results
