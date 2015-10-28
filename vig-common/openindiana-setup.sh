@@ -3,6 +3,13 @@
 # This is separate from the vig-common scripts because vagrant will transmit
 # this file (and only this file) to the guest for provisioning.
 
+# Remove the incorporation since it will conflict for some reason...
+# pkg install: No matching version of developer/parser/bison can be installed:
+#   Reject: pkg://openindiana.org/developer/parser/bison@2.7.1-2014.0.1.0
+#   Reason:  This version is excluded by installed incorporation entire@0.5.11-2015.0.2.0
+echo "Removing 'entire' incorporation to prevent conflicts..."
+pkg uninstall entire
+
 # Install the base package set from oi-dev.
 echo "Installing package set ..."
 pkg install \
