@@ -18,9 +18,12 @@ register_command guest build "Perform a complete build"
 guest_buildonlyzfs() {
 	[ ! -d "${GUEST_WS}/packages" ] && \
 		echo "Error: Must have completed a full build" && exit 1
+	[ -n "$1" ] && BRANCH="$1" && shift
+	[ -z "$BRANCH" ] && BRANCH="master"
 
 	cd ${GUEST_WS}
 	git pull -r || exit $?
+	git checkout ${BRANCH}
 	bldenv illumos.sh
 	./usr/src/tools/quick/make-zfs lint
 	exit $ret
