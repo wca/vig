@@ -49,7 +49,11 @@ guest_workspace_setup() {
 	fi
 
 	# Update from the master copy in case it's needed.
+	# First pull to make the branch available, then check it out
+	# and pull again, rebasing for the update case.
 	cd ${GUEST_WS}
+	runcmd git pull -r
+	runcmd git checkout ${BRANCH}
 	runcmd git pull -r
 
 	# Pull the requested branch, if any, or setup if required.

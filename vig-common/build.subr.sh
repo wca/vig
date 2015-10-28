@@ -2,7 +2,6 @@ guest_build() {
 	[ -n "$1" ] && BRANCH="$1" && shift
 
 	guest_workspace_setup $BRANCH
-	cd ${GUEST_WS}
 
 	# Tail the nightly log while the build is running.
 	/usr/gnu/bin/tail -F log/nightly.log &
@@ -21,12 +20,7 @@ guest_buildonlyzfs() {
 	[ -n "$1" ] && BRANCH="$1" && shift
 	[ -z "$BRANCH" ] && BRANCH="master"
 
-	cd ${GUEST_WS}
-	# First pull to see if the branch is available, then check it out
-	# and pull again, rebasing.
-	git pull -r || exit $?
-	git checkout ${BRANCH} || exit $?
-	git pull -r || exit $?
+	guest_workspace_setup $BRANCH
 	bldenv illumos.sh './usr/src/tools/quick/make-zfs lint'
 	exit $ret
 }
