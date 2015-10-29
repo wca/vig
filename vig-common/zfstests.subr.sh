@@ -44,7 +44,9 @@ zfstests__stop_rollback() {
 }
 zfstests__stop_delete() {
 	[ -n "$NO_TEARDOWN" ] && return
-	vagrant snap delete default --name "pre-upgrade-${RUNTS}"
+	for snap in $SNAPS; do
+		vagrant snap delete default --name "$snap"
+	done
 }
 zfstests_register_stoppers() {
 	# Insert in reverse order of actual execution.
@@ -66,15 +68,15 @@ zfstests_run() {
 }
 
 host_zfstests() {
-	reexec_with_runts $*
-	host_upgrade_guest ${RUNTS} nopostsnap
+	reexec_with_runts $1; shift
+	host_upgrade_guest ${RUNTS} $*
 	zfstests_run
 }
 register_command host zfstests "Perform a full ZFS test suite run"
 
 host_quickertests() {
-	reexec_with_runts $*
-	host_quick_upgrade ${RUNTS}
+	reexec_with_runts $1; shift
+	host_quick_upgrade ${RUNTS} $*
 	zfstests_run
 }
 register_command host quickertests "Perform the ZFS tests a quicker way"

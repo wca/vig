@@ -4,7 +4,7 @@ upgrade_prologue() {
 }
 
 guest_upgrade() {
-	upgrade_prologue $*
+	upgrade_prologue $1; shift
 	cd $GUEST_WS
 	sudo $GUEST_WS/usr/src/tools/scripts/onu -t $BENAME \
 		-d $GUEST_WS/packages/i386/nightly
@@ -22,19 +22,30 @@ guest_quick_upgrade() {
 }
 register_command guest quick_upgrade "Use make-zfs to do a quick upgrade"
 
+take_snap() {
+	snap="$1"
+	# Insert to the head so snapshots can be easily destroyed in reverse.
+	SNAPS="$snap $SNAPS"
+	runcmd vagrant snap take default --name $snap
+}
+
 upgrade_prologue_host() {
-	upgrade_prologue $*
-	OPTS="$1"; shift
+	upgrade_prologue $1; shift
+	for opt in $*; do
+		case $opt in
+			*=*)	eval ${opt} ;;
+			*)	eval ${opt}=1 ;;
+		esac
+	done
 	# Allow specifying "-" as the BE name to generate a date stamp.
 	[ "$BENAME" = "-" ] && BENAME="$(date -u '+%Y.%m.%d.%H%M%S')"
 
 	host_startvm
-	runcmd vagrant snap take default --name pre-upgrade-$BENAME
+	take_snap pre-upgrade-$BENAME
 }
 
 upgrade_epilogue_host() {
-	[ "$OPTS" != "nopostsnap" ] &&
-		runcmd vagrant snap take default --name post-upgrade-$BENAME
+	[ -z "$NO_POSTSNAP" ] && take_snap post-upgrade-$BENAME
 }
 
 host_upgrade_guest() {
