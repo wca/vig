@@ -21,7 +21,9 @@ guest_buildonlyzfs() {
 	[ -z "$BRANCH" ] && BRANCH="master"
 
 	guest_workspace_setup $BRANCH
-	runcmd bldenv illumos.sh './usr/src/tools/quick/make-zfs lint install'
+	bldenv illumos.sh './usr/src/tools/quick/make-zfs lint install'
+	ret=$?
+	exit $ret
 }
 register_command guest buildonlyzfs "Build only ZFS; useful for compile testing"
 
