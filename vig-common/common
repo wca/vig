@@ -15,6 +15,10 @@ CLOSED_URL="http://dlc.openindiana.org/dlc.sun.com/osol/on/downloads/20100817"
 
 ############################## COMMON ROUTINES ############################
 
+stoppers_init() {
+	ret=0
+}
+
 register_stopper() {
 	stopper="$1"
 	stoppers="${stopper} ${stoppers}"

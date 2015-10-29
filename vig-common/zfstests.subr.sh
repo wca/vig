@@ -58,33 +58,23 @@ zfstests_teardown() {
 	unregister_stopper zfstests__stop_delete
 }
 
-host_zfstests() {
-	stopped=0
-	ret=0
-
-	## Everything should be sandboxed to this runtime timestamp.
-	## Re-execute ourselves passing the runtime timestamp.
-	RUNTS="$1"
-	if [ -z "$RUNTS" ]; then
-		RUNTS="$(date -u '+%Y.%m.%d.%H%M%S')"
-		LOGDIR="${VIG_TOP}/zfstests/${RUNTS}"
-		[ -d "$LOGDIR" ] && echo "$LOGDIR already exists?" && exit 127
-		runcmd mkdir -p ${LOGDIR}
-		VIG_ARGS="host zfstests"
-		vig_reexec_noreturn ${RUNTS} 2>&1 | tee ${LOGDIR}/host.log
-		exit $? # exit code for tee subshell
-	fi
-	LOGDIR="${VIG_TOP}/zfstests/${RUNTS}"
-
-	## 1. Upgrade the VM, bringing it up if needed.  This will create
-	##    the VM snapshot "pre-upgrade-${RUNTS}", referenced here.
-	host_upgrade_guest ${RUNTS} nopostsnap
+zfstests_run() {
+	stoppers_init
 	zfstests_register_stoppers
-
-	## 2. Start the run, and copy back the results if possible.
 	runguest zfstests $RUNTS
-
-	## 3. Stop by rolling back the snapshot and destroying it.
 	zfstests_teardown
 }
+
+host_zfstests() {
+	reexec_with_runts $*
+	host_upgrade_guest ${RUNTS} nopostsnap
+	zfstests_run
+}
 register_command host zfstests "Perform a full ZFS test suite run"
+
+host_quickertests() {
+	reexec_with_runts $*
+	host_quick_upgrade ${RUNTS}
+	zfstests_run
+}
+register_command host quickertests "Perform the ZFS tests a quicker way"
