@@ -53,6 +53,10 @@ guest_workspace_setup() {
 	# and pull again, rebasing for the update case.
 	cd ${GUEST_WS}
 	runcmd git pull -r
+	if ! git show --oneline -s $BRANCH >/dev/null 2>&1; then
+		echo "Error: Unknown branch '$BRANCH'"
+		exit 1
+	fi
 	runcmd git checkout ${BRANCH}
 	runcmd git pull -r
 
