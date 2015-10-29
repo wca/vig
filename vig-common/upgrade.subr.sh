@@ -21,7 +21,7 @@ guest_quick_upgrade() {
 	makezfs=${GUEST_WS}/usr/src/tools/quick/make-zfs
 	# Allow installing a temporary local override.
 	[ -x /usr/local/bin/make-zfs ] && makezfs=/usr/local/bin/make-zfs
-	sudo $makezfs onuzfs
+	sudo bldenv illumos.sh "$makezfs onuzfs"
 	upgrade_epilogue
 }
 register_command guest quick_upgrade "Use make-zfs to do a quick upgrade"
