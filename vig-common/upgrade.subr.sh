@@ -2,17 +2,14 @@ upgrade_prologue() {
 	[ -z "$1" ] && echo "Error: Must specify upgrade BE name" && exit 1
 	BENAME="$1"; shift
 }
-upgrade_epilogue() {
-	sudo beadm unmount $BENAME
-	sudo beadm activate $BENAME
-}
 
 guest_upgrade() {
 	upgrade_prologue $*
 	cd $GUEST_WS
 	sudo $GUEST_WS/usr/src/tools/scripts/onu -t $BENAME \
 		-d $GUEST_WS/packages/i386/nightly
-	upgrade_epilogue
+	sudo beadm unmount $BENAME
+	sudo beadm activate $BENAME
 }
 register_command guest upgrade "Upgrade the guest using built sources"
 
@@ -22,7 +19,6 @@ guest_quick_upgrade() {
 	# Allow installing a temporary local override.
 	[ -x /usr/local/bin/make-zfs ] && makezfs=/usr/local/bin/make-zfs
 	bldenv illumos.sh "$makezfs onuzfs"
-	upgrade_epilogue
 }
 register_command guest quick_upgrade "Use make-zfs to do a quick upgrade"
 
