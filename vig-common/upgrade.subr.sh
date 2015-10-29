@@ -18,7 +18,10 @@ register_command guest upgrade "Upgrade the guest using built sources"
 
 guest_quick_upgrade() {
 	cd $GUEST_WS
-	sudo $GUEST_WS/usr/src/tools/quick/make-zfs onuzfs
+	makezfs=${GUEST_WS}/usr/src/tools/quick/make-zfs
+	# Allow installing a temporary local override.
+	[ -x /usr/local/bin/make-zfs ] && makezfs=/usr/local/bin/make-zfs
+	sudo $makezfs onuzfs
 	upgrade_epilogue
 }
 register_command guest quick_upgrade "Use make-zfs to do a quick upgrade"
