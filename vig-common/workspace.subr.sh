@@ -54,8 +54,12 @@ guest_workspace_setup() {
 	cd ${GUEST_WS}
 	runcmd git pull -r
 	if ! git show --oneline -s $BRANCH >/dev/null 2>&1; then
-		echo "Error: Unknown branch '$BRANCH'"
-		exit 1
+		if git show --oneline -s origin/$BRANCH >/dev/null 2>&1; then
+			runcmd git branch $BRANCH origin/$BRANCH
+		else
+			echo "Error: Unknown branch '$BRANCH'"
+			exit 1
+		fi
 	fi
 	runcmd git checkout ${BRANCH}
 	runcmd git pull -r
