@@ -42,7 +42,7 @@ upgrade_epilogue_host() {
 }
 
 host_upgrade_guest() {
-	upgrade_prologue_host
+	upgrade_prologue_host $*
 	runguest upgrade $BENAME
 	runcmd vagrant reload
 	upgrade_epilogue_host
@@ -50,7 +50,7 @@ host_upgrade_guest() {
 register_command host upgrade_guest "Upgrade the guest using built sources"
 
 host_quick_upgrade() {
-	upgrade_prologue_host
+	upgrade_prologue_host $*
 	runguest quick_upgrade
 	runcmd vagrant reload
 	upgrade_epilogue_host
