@@ -20,6 +20,11 @@ guest_buildonlyzfs() {
 	[ -n "$1" ] && BRANCH="$1" && shift
 	[ -z "$BRANCH" ] && BRANCH="master"
 
+	if ! git show --oneline -s $BRANCH >/dev/null 2>&1; then
+		echo "Error: Unknown branch '$BRANCH'"
+		exit 1
+	fi
+
 	guest_workspace_setup $BRANCH
 	bldenv illumos.sh './usr/src/tools/quick/make-zfs lint install'
 	ret=$?
