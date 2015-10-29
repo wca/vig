@@ -8,7 +8,7 @@ upgrade_epilogue() {
 }
 
 guest_upgrade() {
-	upgrade_prologue
+	upgrade_prologue $*
 	cd $GUEST_WS
 	sudo $GUEST_WS/usr/src/tools/scripts/onu -t $BENAME \
 		-d $GUEST_WS/packages/i386/nightly
@@ -27,7 +27,7 @@ guest_quick_upgrade() {
 register_command guest quick_upgrade "Use make-zfs to do a quick upgrade"
 
 upgrade_prologue_host() {
-	upgrade_prologue
+	upgrade_prologue $*
 	OPTS="$1"; shift
 	# Allow specifying "-" as the BE name to generate a date stamp.
 	[ "$BENAME" = "-" ] && BENAME="$(date -u '+%Y.%m.%d.%H%M%S')"
