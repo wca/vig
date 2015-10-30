@@ -81,18 +81,12 @@ guest_workspace_setup() {
 		echo "$expected" > .${closed_bin}.cksum
 	done
 
-	# Make sure illumos.sh is up to date.
-	if [ ! -e illumos.sh -o ${VIG_COMMON}/illumos.sh -nt illumos.sh ]; then
-		sed -e "s,WS_GATE_NAME,$(basename $(pwd)),g" \
-			${VIG_COMMON}/illumos.sh > illumos.sh
-	fi
-
-	# Make sure the nightly script is up to date.
-	# XXX Assumes no changes were made to it.  Is that valid?
-	if ! cmp -s usr/src/tools/scripts/nightly.sh nightly.sh; then
-		runcmd cp usr/src/tools/scripts/nightly.sh nightly.sh
-		runcmd chmod +x nightly.sh
-	fi
+	# Make sure illumos.sh and nightly.sh are up to date.
+	runcmd cp usr/src/tools/env/illumos.sh .
+	cat ${VIG_COMMON}/illumos.sh >> illumos.sh
+	runcmd chmod +x illumos.sh
+	runcmd cp usr/src/tools/scripts/nightly.sh nightly.sh
+	runcmd chmod +x nightly.sh
 }
 register_command guest workspace_setup
 
