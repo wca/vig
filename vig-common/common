@@ -46,6 +46,7 @@ stop() {
 		${stopper}
 		unregister_stopper ${stopper}
 	done
+	echo "*** Command failed, exiting..."
 	exit $ret
 }
 

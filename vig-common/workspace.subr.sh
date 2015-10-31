@@ -52,7 +52,7 @@ guest_workspace_setup() {
 	# First pull to make the branch available, then check it out
 	# and pull again, rebasing for the update case.
 	cd ${GUEST_WS}
-	runcmd git pull -r
+	runcmd git fetch origin
 	if ! git show --oneline -s $BRANCH >/dev/null 2>&1; then
 		if git show --oneline -s origin/$BRANCH >/dev/null 2>&1; then
 			runcmd git branch $BRANCH origin/$BRANCH
@@ -61,8 +61,9 @@ guest_workspace_setup() {
 			exit 1
 		fi
 	fi
+	runcmd git reset --hard
 	runcmd git checkout ${BRANCH}
-	runcmd git pull -r
+	runcmd git merge --ff-only origin/${BRANCH}
 
 	# Pull the requested branch, if any, or setup if required.
 	# This expects the workspace to be clean, obviously.  If this is not
