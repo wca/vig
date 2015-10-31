@@ -62,6 +62,7 @@ guest_workspace_setup() {
 		fi
 	fi
 	runcmd git reset --hard
+	runcmd git clean -qf
 	runcmd git checkout ${BRANCH}
 	runcmd git merge --ff-only origin/${BRANCH}
 
