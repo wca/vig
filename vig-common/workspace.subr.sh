@@ -48,6 +48,10 @@ guest_workspace_setup() {
 		git clone ${GUEST_REPO} illumos-gate
 	fi
 
+	# git clean excludes: exclude known safe extra files; the default
+	# .gitignore excludes the usual object tree in proto/.
+	CLEAN_EXCLUDES="$CLEAN_EXCLUDES --exclude='.on-closed-bins*'"
+
 	# Update from the master copy in case it's needed.
 	# First pull to make the branch available, then check it out
 	# and pull again, rebasing for the update case.
@@ -62,7 +66,7 @@ guest_workspace_setup() {
 		fi
 	fi
 	runcmd git reset --hard
-	runcmd git clean -qf
+	runcmd git clean -qf $CLEAN_EXCLUDES
 	runcmd git checkout ${BRANCH}
 	runcmd git merge --ff-only origin/${BRANCH}
 
