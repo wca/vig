@@ -12,6 +12,7 @@ def cfg_zfs_disks(vb)
   1.upto(5) do |i|
     diskpath = File.join(zfsdisks, "disk#{i}.vdi")
     next if File.exists?(diskpath)
+    puts "*** Creating ZFS disk #{diskpath} ..."
     if i == 1
       # Add the storage controller if we haven't created the first disk yet.
       vb.customize ['storagectl', :id, "--name", "SAS", "--add", "scsi",
