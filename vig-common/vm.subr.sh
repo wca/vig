@@ -15,7 +15,9 @@ host_setupvm() {
 	runcmd rm -rf zfsdisks
 
 	# Bring up the VM, then restart it for setup changes to take effect.
-	runcmd vagrant up
+	# Note that we must use VirtualBox here, since VMware providers
+	# currently don't have a working HGFS.
+	runcmd vagrant up --provider=virtualbox
 	runcmd vagrant reload
 }
 register_command host setupvm "(Re-)Setup the VM"
