@@ -3,10 +3,10 @@
 SNAPPLUGIN=vagrant-multiprovider-snap
 HIPSTER=oi-hipster-201410
 GUEST_HOME="/export/home/vagrant"
-GUEST_WS="${GUEST_HOME}/ws/illumos-gate"
+GUEST_WS="${GUEST_HOME}/ws/openzfs"
 GUEST_VIG="/vagrant/.vig/vig guest"
-GUEST_REPO="/vagrant/illumos-gate"
-HOST_REPO="${VIG_TOP}/illumos-gate"
+GUEST_REPO="/vagrant/openzfs"
+HOST_REPO="${VIG_TOP}/openzfs"
 VIG_COMMON="${VIG_DIR}/vig-common"
 OI_PACKER_GIT="git://github.com/wca/oi-packer"
 CLOSED_BINS="on-closed-bins-nd on-closed-bins"

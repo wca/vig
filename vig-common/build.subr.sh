@@ -30,7 +30,7 @@ register_command guest buildonlyzfs "Build only ZFS; useful for compile testing"
 host_build() {
 	[ -n "$1" ] && BRANCH="$1" || BRANCH="master"
 	cd ${HOST_REPO} || \
-		(echo "No illumos-gate companion repository?" && exit 1)
+		(echo "No openzfs companion repository?" && exit 1)
 	if ! git show "$BRANCH" >/dev/null 2>&1; then
 		echo "Error: Unknown branch '$BRANCH'!"
 		exit 1
@@ -40,7 +40,7 @@ host_build() {
 	host_workspace_setup
 	host_startvm
 
-	# The illumos build always returns non-zero because there are
+	# The openzfsd always returns non-zero because there are
 	# currently-ignored lint warnings.
 	runssh "${GUEST_VIG} build ${BRANCH} || true"
 }

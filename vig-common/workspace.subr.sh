@@ -45,7 +45,7 @@ guest_workspace_setup() {
 		parent=$(dirname ${GUEST_WS})
 		runcmd mkdir -p ${parent}
 		cd ${parent}
-		git clone ${GUEST_REPO} illumos-gate
+		git clone ${GUEST_REPO} openzfs
 	fi
 
 	# git clean excludes: exclude known safe extra files; the default
