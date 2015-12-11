@@ -1,4 +1,5 @@
 host_setupvm() {
+	cd ${VIG_TOP}
 	runcmd ln -sf .vig/vig-common/openindiana-Vagrantfile Vagrantfile
 	runcmd ln -sf .vig/vig-common/openindiana-setup.sh setup.sh
 
