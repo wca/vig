@@ -17,7 +17,7 @@ ensure_module() {
 	file="$1"
 	module="$2"
 
-	if ! sysrc_enabled $1 ${module}_enabled; then
+	if ! sysrc_enabled $1 ${module}_enable; then
 		runcmd sudo sysrc -f $file ${var}=YES
 	fi
 	case "$file" in
