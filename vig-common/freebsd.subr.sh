@@ -4,8 +4,8 @@ sysrc_enabled() {
 
 	cur=$(sysrc -f $file -n $var)
 	case "$cur" in
-		[Yy][Ee][Ss]) return 1 ;;
-		*) return 0;
+		[Yy][Ee][Ss]) return 0 ;;
+		*) return 1 ;;
 	esac
 }
 
