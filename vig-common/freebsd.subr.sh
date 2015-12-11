@@ -38,7 +38,7 @@ host_setupfreebsd() {
 		pkg info -q $pkg && continue
 		pkgs="$pkgs $pkg"
 	done
-	[ -n "$pkgs" ] && runcmd sudo pkg install $pkgs
+	[ -n "$pkgs" ] && runcmd sudo pkg install -y $pkgs
 	vbug=$(id -g vboxusers)
 	if id -G | grep -w $vbug >/dev/null 2>&1; then
 		runcmd sudo pw usermod $(whoami) -g vboxusers
