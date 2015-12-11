@@ -44,7 +44,7 @@ host_setupfreebsd() {
 	ensure_module /etc/rc.conf vboxnet
 
 	vbug=$(id -g vboxusers)
-	if id -G | grep -w $vbug >/dev/null 2>&1; then
+	if ! id -G | grep -w $vbug >/dev/null 2>&1; then
 		runcmd sudo pw usermod $(whoami) -g vboxusers
 		echo "*** You were not a member of vboxusers; fixed."
 		echo "*** Restart this shell to activate this membership."
