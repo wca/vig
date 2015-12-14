@@ -34,7 +34,8 @@ ensure_module() {
 
 host_setupfreebsd() {
 	pkgs=""
-	for pkg in vagrant virtualbox-ose; do
+	# Xauth is included so VirtualBox GUI is remotely runnable
+	for pkg in vagrant virtualbox-ose xauth; do
 		pkg info -q $pkg && continue
 		pkgs="$pkgs $pkg"
 	done
